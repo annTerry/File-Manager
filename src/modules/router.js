@@ -5,21 +5,28 @@ export default class CommandRouter {
     this.navigator = new Navigator();
   }
 parser(string) {
-  const stringArray = string.split(' ');
-  const command = stringArray[0].trim();
+  const clearString = string.trim();
+  let separateIndex = clearString.indexOf(' ');
+  separateIndex = separateIndex < 2 ? clearString.length : separateIndex;
+  const command = clearString.slice(0, separateIndex);
   switch(command){
     case 'up': 
       this.navigator.upDir();
       break;
     case 'cd':
-      console.log('cd');
+      if (clearString.length > command.length) {
+        let thisDir = clearString.slice(separateIndex).trim();
+        this.navigator.goToDir(thisDir);
+      }
       break;
     case 'ls':
       this.navigator.showCurrentDirFileList();
       break;  
     case '.exit':
       process.exit();
-      break;    
+      break;
+    default:
+      console.log(command);      
   }
 }
 }

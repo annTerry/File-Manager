@@ -14,9 +14,6 @@ export default class Navigator {
   getCurrent() {
     return this.current;
   }
-  setCurrent(newPath) {
-    this.current = path.join(this.current, newPath);
-  }
   upDir() {
    const dirArray = this.current.split(this.sep); 
    dirArray.pop();
@@ -25,6 +22,11 @@ export default class Navigator {
   }
   showCurrent() {
     return `You are currently in ${this.current}`;
+  }
+  async goToDir(dir) {
+    const dirPath = path.resolve(this.current, dir);
+    this.current = dirPath;
+    console.log(this.showCurrent());
   }
   async showCurrentDirFileList() {
     const fileList = await this.fileList(this.current);
