@@ -1,15 +1,17 @@
 import process from 'node:process';
-import CurrentDir from './currentDir.js';
+import Router from './router.js';
 
 export default class CommandManager {
   constructor (userData) {
-    this.currentDir = new CurrentDir();
+    this.router = new Router();
     process.stdin.on("data", data => {
-      console.log(data.toString());
-      this.currentDir.upDir();
+      this.router.parser(data.toString());
     });
-    process.stdin.on("close", () => {
-      console.log(userData.goodBuy());
+    process.on("exit", () => {
+      console.log("\n" + userData.goodBuy());
+    });
+    process.on('SIGINT', () => {
+      process.exit();
     });
   }
 }

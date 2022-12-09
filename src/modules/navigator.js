@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-export default class CurrentDir {
+export default class Navigator {
   filename = fileURLToPath(import.meta.url);
   dirname = path.dirname(this.filename);
   current = os.homedir();
