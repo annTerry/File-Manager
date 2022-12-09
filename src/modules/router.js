@@ -5,10 +5,8 @@ export default class CommandRouter {
     this.navigator = new Navigator();
   }
 parser(string) {
-  console.log(`(${string})`);
   const stringArray = string.split(' ');
   const command = stringArray[0].trim();
-  console.log(`(${command})`);
   switch(command){
     case 'up': 
       this.navigator.upDir();
@@ -17,7 +15,7 @@ parser(string) {
       console.log('cd');
       break;
     case 'ls':
-      console.log('ls');
+      this.navigator.showCurrentDirFileList();
       break;  
     case '.exit':
       process.exit();

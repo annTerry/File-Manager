@@ -26,4 +26,23 @@ export default class Navigator {
   showCurrent() {
     return `You are currently in ${this.current}`;
   }
+  async showCurrentDirFileList() {
+    const fileList = await this.fileList(this.current);
+    console.table(fileList);
+  }
+  async fileList(dir) {
+    const filesInDir = await fs.readdir(dir);
+    const files = await Promise.all(
+      filesInDir.map(async (file) => {
+            const filePath = path.join(dir, file);
+            const stats = await fs.stat(filePath);         
+            if (stats.isDirectory()) {
+              return {Name:file,type:'directory'};
+            } else {
+                return {Name:file,type:'file'};
+            }
+        })
+    );
+    return files;
+  }
 }
