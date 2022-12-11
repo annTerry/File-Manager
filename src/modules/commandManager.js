@@ -5,7 +5,7 @@ export default class CommandManager {
   constructor (userData) {
     this.router = new Router();
     process.stdin.on("data", data => {
-      this.router.parser(data.toString());
+      this.router.go(data.toString());
     });
     process.on("exit", () => {
       console.log("\n" + userData.goodBuy());
