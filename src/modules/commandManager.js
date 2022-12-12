@@ -4,8 +4,8 @@ import Router from './router.js';
 export default class CommandManager {
   constructor (userData) {
     this.router = new Router();
-    process.stdin.on("data", data => {
-      this.router.go(data.toString());
+    process.stdin.on("data", async data => {
+      await this.router.go(data.toString());
     });
     process.on("exit", () => {
       console.log("\n" + userData.goodBuy());

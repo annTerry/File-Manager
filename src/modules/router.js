@@ -11,13 +11,38 @@ parseStrings(string) {
   let separateIndex = clearString.indexOf(' ');
   separateIndex = separateIndex < 2 ? clearString.length : separateIndex;
   result.command = clearString.slice(0, separateIndex);
+  const paramsData = clearString.slice(separateIndex).trim();
   if (clearString.length > result.command.length) {
     result.params = [];
-    result.params[0] = clearString.slice(separateIndex).trim();
+    if (paramsData.includes('"')) {
+      const sepByQuotes = paramsData.split('"');
+      const allParams = sepByQuotes.filter(data => data.trim().length > 0);
+      if (allParams.length > 1) {
+        result.params[0] = allParams[0].trim();
+        result.params[1] = allParams[1].trim();
+      }
+      else {
+        result.params[0] = allParams[0];
+      }
+    }
+    else if (paramsData.includes(' ')) {
+      const sepBySpace = paramsData.split(' ');
+      const allParams = sepBySpace.filter(data => data.trim().length > 0);
+      if (allParams.length > 1) {
+        result.params[0] = allParams[0].trim();
+        result.params[1] = allParams[1].trim();
+      }
+      else {
+        result.params[0] = allParams[0];
+      }
+    }
+    else {
+    result.params[0] = paramsData;
+  }
   }
   return result;
 }  
-go(string) {
+async go(string) {
   const parsedString = this.parseStrings(string);
   switch(parsedString.command){
     case 'up': 
@@ -33,17 +58,17 @@ go(string) {
       break;
     case 'cat':
       if (parsedString.params[0]) {
-        FileControl.readFile(parsedString.params[0]);
+        await FileControl.readFile(this.navigator.thisPath(parsedString.params[0]));
       }
       break;
     case 'rm':
       if (parsedString.params[0]) {
-        FileControl.deleteFile(parsedString.params[0]);
+        await FileControl.deleteFile(this.navigator.thisPath(parsedString.params[0]));
       }
        break;
     case 'add':
       if (parsedString.params[0]) {
-        FileControl.createFile(parsedString.params[0]);
+        await FileControl.createFile(this.navigator.thisPath(parsedString.params[0]));
         }
        break;
     case 'cp':

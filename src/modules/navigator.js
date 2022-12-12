@@ -23,9 +23,12 @@ export default class Navigator {
   showCurrent() {
     return `You are currently in ${this.current}`;
   }
-  async goToDir(dir) {
-    const dirPath = path.resolve(this.current, dir);
-    this.current = dirPath;
+  thisPath(paramName) {
+    return path.resolve(this.current, paramName);
+  }
+
+  goToDir(dir) {
+    this.current = this.thisPath(dir);
     console.log(this.showCurrent());
   }
   async showCurrentDirFileList() {
