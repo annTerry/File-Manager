@@ -31,14 +31,18 @@ export default class FileControl {
     });
     console.log(`${fileName} created!`);
   }
-  static renameFile(oldFileName, newFileName) { //rn
-    console.log('rename file ' + oldFileName + " to" + newFileName);
+  static async renameFile(oldFileName, newFileName) { 
+    await fsPromises.rename(oldFileName, newFileName);
+    console.log("Successfully renamed!");
   }
-  static copyFile(oldFileName, newFileName) { //cp
-    console.log('copy file ' + oldFileName + " to" + newFileName);
+  static async copyFile(oldFileName, newFileName) {
+    await fsPromises.copyFile(oldFileName, newFileName);
+    console.log("Copy created");
   }
-  static moveFile(oldFileName, newFileName) { //mv
-    console.log('move file ' + oldFileName + " to" + newFileName);
+  static async moveFile(oldFileName, newFileName) { 
+    await fsPromises.moveFile(oldFileName, newFileName);
+    console.log("File moved");
   }
-
+  
+  
 }

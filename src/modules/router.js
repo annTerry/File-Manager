@@ -1,5 +1,6 @@
 import Navigator from './navigator.js';
 import FileControl from './fileControl.js';
+import OSFunctions from './osFunctions.js';
 
 export default class CommandRouter {
   constructor(navigator) {
@@ -85,7 +86,12 @@ async go(string) {
       if (parsedString.params[0] && parsedString.params[1]) {
         FileControl.moveFile(parsedString.params[0], parsedString.params[1]);
         }
-       break;                 
+       break;
+    case 'os':
+      if (parsedString.params[0]) {
+        console.log(OSFunctions.returnData(parsedString.params[0]));
+      }     
+      break;               
     case '.exit':
       process.exit();
       break;
