@@ -2,7 +2,7 @@ import fsPromises from "node:fs/promises"
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-
+import crypto from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,6 +43,10 @@ export default class FileControl {
     await fsPromises.moveFile(oldFileName, newFileName);
     console.log("File moved");
   }
-  
-  
+  static async calculateHash(fileName) 
+  {
+      const data = await fsPromises.readFile(fileName, "utf8");
+      const hash = crypto.createHash('sha256').update(Buffer.from(data).toString()).digest('hex');
+      console.log(hash);
+  }
 }
