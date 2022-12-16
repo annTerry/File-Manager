@@ -57,6 +57,9 @@ export default class CommandRouter {
           if (parsedString.params[0]) {
             this.navigator.goToDir(parsedString.params[0]);
           }
+          else {
+            throw new Error('No path entered');
+          }
           break;
         case 'ls':
           this.navigator.showCurrentDirFileList();
@@ -65,53 +68,79 @@ export default class CommandRouter {
           if (parsedString.params[0]) {
             await FileControl.readFile(this.navigator.thisPath(parsedString.params[0]));
           }
+          else {
+            throw new Error('No file entered');
+          }
           break;
         case 'rm':
           if (parsedString.params[0]) {
             await FileControl.deleteFile(this.navigator.thisPath(parsedString.params[0]));
+          }
+          else {
+            throw new Error('No file entered');
           }
           break;
         case 'add':
           if (parsedString.params[0]) {
             await FileControl.createFile(this.navigator.thisPath(parsedString.params[0]));
           }
+          else {
+            throw new Error('No file entered');
+          }
           break;
         case 'cp':
           if (parsedString.params[0] && parsedString.params[1]) {
-            FileControl.copyFile(parsedString.params[0], parsedString.params[1]);
+            FileControl.copyFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+          }
+          else {
+            throw new Error('Wrong params numbers');
           }
           break;
         case 'rn':
           if (parsedString.params[0] && parsedString.params[1]) {
-            FileControl.renameFile(parsedString.params[0], parsedString.params[1]);
+            FileControl.renameFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+          }
+          else {
+            throw new Error('Wrong params numbers');
           }
           break;
         case 'mv':
           if (parsedString.params[0] && parsedString.params[1]) {
-            FileControl.moveFile(parsedString.params[0], parsedString.params[1]);
+            FileControl.moveFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+          }
+          else {
+            throw new Error('Wrong params numbers');
           }
           break;
         case 'compress':
-          console.log(parsedString.params[0] + " " + parsedString.params[1])
           if (parsedString.params[0] && parsedString.params[1]) {
-            Compress.compress(parsedString.params[0], parsedString.params[1]);
+            await Compress.compress(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+          }
+          else {
+            throw new Error('Wrong params numbers');
           }
           break;
         case 'decompress':
           if (parsedString.params[0] && parsedString.params[1]) {
-            Compress.decompress(parsedString.params[0], parsedString.params[1]);
+            await Compress.decompress(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+          }
+          else {
+            throw new Error('Wrong params numbers');
           }
           break;
         case 'os':
           if (parsedString.params[0]) {
             console.log(OSFunctions.returnData(parsedString.params[0]));
           }
+          else {
+            throw new Error('No params');
+          }
           break;
         case '.exit':
           process.exit();
           break;
         default:
-          console.log(parsedString.command);
+          throw new Error('Wrong command')
       }
     }
     catch (e) {

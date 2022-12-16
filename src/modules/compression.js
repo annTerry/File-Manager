@@ -1,22 +1,21 @@
 
 import fs from 'node:fs';
 import zlib from 'node:zlib';
+import FileControl from './fileControl.js';
 
 export default class Compress {
-  static compress (fileName, archiveName) 
-  {
-    const gzip = zlib.createGzip(); 
-    this.action(gzip, fileName, archiveName, 'File successfully compressed!');
+  static async compress(fileName, archiveName) {
+    const gzip = zlib.createGzip();
+    await this.action(gzip, fileName, archiveName, 'File successfully compressed!');
   };
-  static decompress (fileName, archiveName) 
-  {
+  static async decompress(archiveName, fileName) {
     const unzip = zlib.createUnzip();
-    this.action(unzip, archiveName, fileName, 'File successfully decompressed!');
+    await this.action(unzip, archiveName, fileName, 'File successfully decompressed!');
   };
-  static action(action, input, output, message) {
-    const inputFIle = fs.createReadStream(input); 
-    const outputFile = fs.createWriteStream(output); 
-    input.pipe(action).pipe(outputFile);
-    console.log(message);
+  static async action(action, input, output, message) {
+    const inputFIle = fs.createReadStream(input);
+    const outputFile = fs.createWriteStream(output);
+    await inputFIle.pipe(action).pipe(outputFile);
+    throw new Error(message);
   }
 }

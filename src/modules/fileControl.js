@@ -17,7 +17,7 @@ export default class FileControl {
       if (data != null) console.log(data);
     });
     stream.on('close', () => {
-      console.log('--- end ---');
+     throw new Error('--- end ---');
     });
   }
   static async deleteFile(fileName) { //rm
@@ -33,7 +33,7 @@ export default class FileControl {
   }
   static async renameFile(oldFileName, newFileName) { 
     await fsPromises.rename(oldFileName, newFileName);
-    console.log("Successfully renamed!");
+    throw new Error("Successfully renamed!");
   }
   static async copyFile(oldFileName, newFileName) {
     await fsPromises.copyFile(oldFileName, newFileName);
@@ -41,12 +41,12 @@ export default class FileControl {
   }
   static async moveFile(oldFileName, newFileName) { 
     await fsPromises.moveFile(oldFileName, newFileName);
-    console.log("File moved");
+    throw new Error("File moved");
   }
   static async calculateHash(fileName) 
   {
       const data = await fsPromises.readFile(fileName, "utf8");
       const hash = crypto.createHash('sha256').update(Buffer.from(data).toString()).digest('hex');
-      console.log(hash);
+      throw new Error(hash);
   }
 }
