@@ -1,5 +1,6 @@
 import fsPromises from "node:fs/promises"
-import fs from 'node:fs';
+import { createReadStream, createWriteStream, lstat }  from 'node:fs';
+import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -11,14 +12,17 @@ export default class FileControl {
 
   static async readFile(fileName) { //cat
     console.log('--- begin ---');
-    const stream = fs.ReadStream(fileName, { encoding: 'utf-8' });
-    await stream.on('readable', async () => {
-      var data = await stream.read();
-      if (data != null) console.log(data);
-    });
-    stream.on('close', () => {
-     throw new Error('--- end ---');
-    });
+
+    try {
+      await fsPromises.access(fileName, fsPromises.constants.R_OK);
+      const readStream = createReadStream(fileName);
+      for await (const chunk of readStream) {
+        console.log(chunk.toString());
+      }
+    } catch (e) {
+      throw new Error('File not exist or not readable');
+    }
+    throw new Error('---end---');
   }
   static async deleteFile(fileName) { //rm
     await fsPromises.unlink(fileName);
@@ -36,12 +40,22 @@ export default class FileControl {
     throw new Error("Successfully renamed!");
   }
   static async copyFile(oldFileName, newFileName) {
-    await fsPromises.copyFile(oldFileName, newFileName);
-    console.log("Copy created");
+    const readFile = createReadStream(oldFileName);
+    const writeFile = createWriteStream(newFileName);
+    readFile.on('error', (err) => {
+      if (err.code === 'ENOENT') {
+          throw new Error('No such file');
+      }
+      throw err;
+  }).pipe(writeFile);
+  readFile.on('close', () => {
+    throw new Error('Copy created!');
+   });
   }
   static async moveFile(oldFileName, newFileName) { 
-    await fsPromises.moveFile(oldFileName, newFileName);
-    throw new Error("File moved");
+    await this.copyFile(oldFileName, newFileName);
+    await this.deleteFile(oldFileName);
+    throw new Error("File moved!");
   }
   static async calculateHash(fileName) 
   {

@@ -3,7 +3,7 @@ export default class ErrorCatcher {
     this.navigator = navigator;
   }
   catchError(error) {
-    console.log (error.message);
+    if (error.message) console.log (error.message);
     console.log(this.navigator.showCurrent());
   }
 }

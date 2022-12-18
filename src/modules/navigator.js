@@ -4,37 +4,71 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 export default class Navigator {
+  
   filename = fileURLToPath(import.meta.url);
+  
   dirname = path.dirname(this.filename);
+  
   current = os.homedir();
+  
   sep = path.sep;
+  
   constructor() {
     console.log(this.showCurrent());
   }
+
   getCurrent() {
     return this.current;
   }
+
   upDir() {
    const dirArray = this.current.split(this.sep); 
    dirArray.pop();
    this.current = dirArray.length > 1 ? dirArray.join(this.sep) : this.current;
-   console.log(this.showCurrent());
+   throw Error('');
   }
+
   showCurrent() {
-    return `You are currently in ${this.current}`;
+    return `You are currently in ${this.current}
+Please enter command`;
   }
+
   thisPath(paramName) {
     return path.resolve(this.current, paramName);
   }
 
-  goToDir(dir) {
+  async goToDir(dir) {
+    try {
+    if (await (await fs.lstat(this.thisPath(dir))).isDirectory()) {
     this.current = this.thisPath(dir);
-    console.log(this.showCurrent());
+    throw new Error('');
   }
+  else {
+    throw new Error(`It's not directory!`);
+  }
+    }
+    catch (e) {
+      if (e.message) {
+        throw new Error(e.message);
+      }
+      else {
+        throw new Error('');
+      }
+    }
+  }
+
   async showCurrentDirFileList() {
     const fileList = await this.fileList(this.current);
-    console.table(fileList);
+    const sortedFileList = fileList.sort((a,b) => {
+      if (a.type > b.type) return 1;
+      else if (a.type < b.type) return -1;
+      else if (a.Name.toUpperCase() > b.Name.toUpperCase()) return 1;
+      else return -1;
+    })
+    console.table(sortedFileList);
+    throw Error('');
   }
+
   async fileList(dir) {
     const filesInDir = await fs.readdir(dir);
     const files = await Promise.all(

@@ -7,9 +7,9 @@ export default class UserData {
 userName = '';  
 constructor () {
   const userArgs = process.argv.filter(data => data.indexOf(USERNAME_KEY) >= 0);
-  console.log (process.argv);
   if (userArgs.length > 0) {
     this.userName = userArgs[0].slice(USERNAME_KEY.length);
+    this.userName = this.userName.charAt(0).toUpperCase() + this.userName.slice(1);
   }
 }
 getUserName() {

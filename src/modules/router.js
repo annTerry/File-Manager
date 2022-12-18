@@ -54,34 +54,34 @@ export default class CommandRouter {
           this.navigator.upDir();
           break;
         case 'cd':
-          if (parsedString.params[0]) {
-            this.navigator.goToDir(parsedString.params[0]);
+          if (parsedString.params && parsedString.params.length > 0) {
+            await this.navigator.goToDir(parsedString.params[0]);
           }
           else {
             throw new Error('No path entered');
           }
           break;
         case 'ls':
-          this.navigator.showCurrentDirFileList();
+          await this.navigator.showCurrentDirFileList();
           break;
         case 'cat':
-          if (parsedString.params[0]) {
+          if (parsedString.params && parsedString.params.length > 0) {
             await FileControl.readFile(this.navigator.thisPath(parsedString.params[0]));
           }
           else {
-            throw new Error('No file entered');
+            throw new Error('No filename entered');
           }
           break;
         case 'rm':
-          if (parsedString.params[0]) {
+          if (parsedString.params && parsedString.params.length > 0) {
             await FileControl.deleteFile(this.navigator.thisPath(parsedString.params[0]));
           }
           else {
-            throw new Error('No file entered');
+            throw new Error('No filename entered');
           }
           break;
         case 'add':
-          if (parsedString.params[0]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             await FileControl.createFile(this.navigator.thisPath(parsedString.params[0]));
           }
           else {
@@ -89,7 +89,7 @@ export default class CommandRouter {
           }
           break;
         case 'cp':
-          if (parsedString.params[0] && parsedString.params[1]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             FileControl.copyFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
@@ -97,7 +97,7 @@ export default class CommandRouter {
           }
           break;
         case 'rn':
-          if (parsedString.params[0] && parsedString.params[1]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             FileControl.renameFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
@@ -105,7 +105,7 @@ export default class CommandRouter {
           }
           break;
         case 'mv':
-          if (parsedString.params[0] && parsedString.params[1]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             FileControl.moveFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
@@ -113,7 +113,7 @@ export default class CommandRouter {
           }
           break;
         case 'compress':
-          if (parsedString.params[0] && parsedString.params[1]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             await Compress.compress(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
@@ -121,7 +121,7 @@ export default class CommandRouter {
           }
           break;
         case 'decompress':
-          if (parsedString.params[0] && parsedString.params[1]) {
+          if (parsedString.params && parsedString.params.length > 1) {
             await Compress.decompress(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
@@ -129,11 +129,12 @@ export default class CommandRouter {
           }
           break;
         case 'os':
-          if (parsedString.params[0]) {
+          if (parsedString.params && parsedString.params.length > 0) {
             console.log(OSFunctions.returnData(parsedString.params[0]));
+            throw new Error('');
           }
           else {
-            throw new Error('No params');
+            throw new Error('No params for os');
           }
           break;
         case '.exit':
