@@ -26,21 +26,35 @@ export default class FileControl {
   }
   static async deleteFile(fileName) { //rm
     await fsPromises.unlink(fileName);
-    console.log(fileName + " Deleted!");
+    throw new Error(fileName + " Deleted!");
   }
   static async createFile(fileName) { //add
     const data = new Uint8Array(Buffer.from(''));
     await fsPromises.writeFile(fileName, data, (err) => {
       if (err) throw err;
     });
-    console.log(`${fileName} created!`);
+    throw new Error(`${fileName} created!`);
   }
   static async renameFile(oldFileName, newFileName) { 
     await fsPromises.rename(oldFileName, newFileName);
     throw new Error("Successfully renamed!");
   }
   static async copyFile(oldFileName, newFileName) {
-    const readFile = createReadStream(oldFileName);
+    try {
+    await fsPromises.access(oldFileName, fsPromises.constants.R_OK);  
+    await pipeline(
+      createReadStream(oldFileName),
+      createWriteStream(newFileName)
+    );
+    throw new Error('');
+    }
+    catch (e) {
+      if (e.message === '') {
+        throw new Error('Copy created!');
+      }
+      throw new Error('File not exist or not readable');
+    }
+   /*  const readFile = createReadStream(oldFileName);
     const writeFile = createWriteStream(newFileName);
     readFile.on('error', (err) => {
       if (err.code === 'ENOENT') {
@@ -50,7 +64,7 @@ export default class FileControl {
   }).pipe(writeFile);
   readFile.on('close', () => {
     throw new Error('Copy created!');
-   });
+   }); */
   }
   static async moveFile(oldFileName, newFileName) { 
     await this.copyFile(oldFileName, newFileName);

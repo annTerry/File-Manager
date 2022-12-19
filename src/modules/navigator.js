@@ -60,8 +60,8 @@ Please enter command`;
   async showCurrentDirFileList() {
     const fileList = await this.fileList(this.current);
     const sortedFileList = fileList.sort((a,b) => {
-      if (a.type > b.type) return 1;
-      else if (a.type < b.type) return -1;
+      if (a.Type > b.Type) return 1;
+      else if (a.Type < b.Type) return -1;
       else if (a.Name.toUpperCase() > b.Name.toUpperCase()) return 1;
       else return -1;
     })
@@ -76,9 +76,9 @@ Please enter command`;
             const filePath = path.join(dir, file);
             const stats = await fs.stat(filePath);         
             if (stats.isDirectory()) {
-              return {Name:file,type:'directory'};
+              return {Name:file,Type:'directory'};
             } else {
-                return {Name:file,type:'file'};
+                return {Name:file,Type:'file'};
             }
         })
     );

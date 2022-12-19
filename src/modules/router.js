@@ -90,7 +90,7 @@ export default class CommandRouter {
           break;
         case 'cp':
           if (parsedString.params && parsedString.params.length > 1) {
-            FileControl.copyFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+            await FileControl.copyFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
             throw new Error('Wrong params numbers');
@@ -106,7 +106,7 @@ export default class CommandRouter {
           break;
         case 'mv':
           if (parsedString.params && parsedString.params.length > 1) {
-            FileControl.moveFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+            await FileControl.moveFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
             throw new Error('Wrong params numbers');
