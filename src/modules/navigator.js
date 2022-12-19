@@ -24,7 +24,7 @@ export default class Navigator {
   upDir() {
    const dirArray = this.current.split(this.sep); 
    dirArray.pop();
-   this.current = dirArray.length > 1 ? dirArray.join(this.sep) : this.current;
+   this.current = dirArray.length > 1 ? dirArray.join(this.sep) : dirArray.length > 0 ? dirArray + this.sep : this.current;
    throw Error('');
   }
 

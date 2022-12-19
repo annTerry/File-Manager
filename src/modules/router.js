@@ -64,6 +64,14 @@ export default class CommandRouter {
         case 'ls':
           await this.navigator.showCurrentDirFileList();
           break;
+          case 'hash':
+            if (parsedString.params && parsedString.params.length > 0) {
+              await FileControl.calculateHash(this.navigator.thisPath(parsedString.params[0]));
+            }
+            else {
+              throw new Error('No file entered');
+            }
+            break;  
         case 'cat':
           if (parsedString.params && parsedString.params.length > 0) {
             await FileControl.readFile(this.navigator.thisPath(parsedString.params[0]));
@@ -81,7 +89,7 @@ export default class CommandRouter {
           }
           break;
         case 'add':
-          if (parsedString.params && parsedString.params.length > 1) {
+          if (parsedString.params && parsedString.params.length > 0) {
             await FileControl.createFile(this.navigator.thisPath(parsedString.params[0]));
           }
           else {
@@ -98,7 +106,7 @@ export default class CommandRouter {
           break;
         case 'rn':
           if (parsedString.params && parsedString.params.length > 1) {
-            FileControl.renameFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
+            await FileControl.renameFile(this.navigator.thisPath(parsedString.params[0]), this.navigator.thisPath(parsedString.params[1]));
           }
           else {
             throw new Error('Wrong params numbers');

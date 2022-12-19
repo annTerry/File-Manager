@@ -10,23 +10,22 @@ const __dirname = path.dirname(__filename);
 
 export default class FileControl {
 
-  static async readFile(fileName) { //cat
-    console.log('--- begin ---');
-
+  static async readFile(fileName) { //cat    
     try {
       await fsPromises.access(fileName, fsPromises.constants.R_OK);
       const readStream = createReadStream(fileName);
+      console.log('--- begin ---');
       for await (const chunk of readStream) {
         console.log(chunk.toString());
       }
-    } catch (e) {
+    } catch (e) {      
       throw new Error('File not exist or not readable');
     }
     throw new Error('---end---');
   }
-  static async deleteFile(fileName) { //rm
+  static async deleteFile(fileName, noSilence = true) { //rm
     await fsPromises.unlink(fileName);
-    throw new Error(fileName + " Deleted!");
+    if (noSilence) {throw new Error(fileName + " Deleted!")};
   }
   static async createFile(fileName) { //add
     const data = new Uint8Array(Buffer.from(''));
@@ -39,7 +38,7 @@ export default class FileControl {
     await fsPromises.rename(oldFileName, newFileName);
     throw new Error("Successfully renamed!");
   }
-  static async copyFile(oldFileName, newFileName) {
+  static async copyFile(oldFileName, newFileName, noSilence = true) {
     try {
     await fsPromises.access(oldFileName, fsPromises.constants.R_OK);  
     await pipeline(
@@ -49,26 +48,17 @@ export default class FileControl {
     throw new Error('');
     }
     catch (e) {
-      if (e.message === '') {
+      if (e.message === '' && noSilence) {
         throw new Error('Copy created!');
       }
-      throw new Error('File not exist or not readable');
-    }
-   /*  const readFile = createReadStream(oldFileName);
-    const writeFile = createWriteStream(newFileName);
-    readFile.on('error', (err) => {
-      if (err.code === 'ENOENT') {
-          throw new Error('No such file');
+      else if (e.message !== '') {
+        throw new Error('File not exist or not readable');
       }
-      throw err;
-  }).pipe(writeFile);
-  readFile.on('close', () => {
-    throw new Error('Copy created!');
-   }); */
+    }
   }
   static async moveFile(oldFileName, newFileName) { 
-    await this.copyFile(oldFileName, newFileName);
-    await this.deleteFile(oldFileName);
+    await this.copyFile(oldFileName, newFileName, false);
+    await this.deleteFile(oldFileName, false);
     throw new Error("File moved!");
   }
   static async calculateHash(fileName) 
